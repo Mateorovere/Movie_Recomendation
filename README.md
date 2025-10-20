@@ -1,162 +1,125 @@
-# My Python Project
+# 🎬 AI Movie Recommender System - Senior Level Project
 
-A modern Python project with devcontainer, uv, and pre-commit hooks.
+A comprehensive movie recommendation system with machine learning and an interactive web interface.
 
-## Features
 
-- 🐍 Python 3.12+
-- 📦 Dependency management with [uv](https://github.com/astral-sh/uv)
-- 🐳 Development container for consistent environments
-- ✅ Pre-commit hooks with Black, Ruff, mypy, and pytest
-- 🧪 Testing with pytest and coverage
-- 🔍 Type checking with mypy
-- 📝 Code formatting with Black
-- 🚀 Fast linting with Ruff
+### Step 1: Get TMDb API Key
 
-## Getting Started
+1. Go to https://www.themoviedb.org/
+2. Create a free account
+3. Navigate to Settings → API
+4. Request an API key
+5. Copy your API Key
 
-### Option 1: Using DevContainer (Recommended)
+### Step 2: Collect Movie Data
 
-1. Install [Docker](https://www.docker.com/) and [VS Code](https://code.visualstudio.com/)
-2. Install the [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
-3. Open this folder in VS Code
-4. Click "Reopen in Container" when prompted (or use Command Palette: "Dev Containers: Reopen in Container")
 
-The container will automatically:
-- Install Python 3.12
-- Install uv
-- Create a virtual environment
-- Install all dependencies
-- Set up pre-commit hooks
+This script will:
+- Fetch 1,000+ popular movies from TMDb
+- Enrich data with details (cast, crew, genres, keywords)
+- Save to `movies_dataset.csv` (~500 movies enriched, customizable)
+- Takes approximately 15-30 minutes (due to API rate limits)
 
-### Option 2: Local Setup
+### Step 3: Train the Model
 
-1. Install [uv](https://github.com/astral-sh/uv):
-   ```bash
-   curl -LsSf https://astral.sh/uv/install.sh | sh
-   ```
+This will:
+- Load the dataset
+- Create TF-IDF feature vectors
+- Compute similarity matrices
+- Save the trained model to `movie_recommender.pkl`
+- Takes 2-5 minutes depending on dataset size
 
-2. Create and activate virtual environment:
-   ```bash
-   uv sync
-   ```
-
-3. Install pre-commit hooks:
-   ```bash
-   uv run pre-commit install
-   ```
-
-## Development
-
-### Running Tests
+### Step 4: Launch the Web App
 
 ```bash
-# Run all tests
-uv run pytest
-
-# Run with coverage
-uv run pytest --cov
-
-# Run specific test file
-uv run pytest tests/test_example.py
+streamlit run src/api/st-interface.py
 ```
 
-### Code Formatting
+The app will open in your browser at `http://localhost:8501`
 
-```bash
-# Format code with Black
-uv run black src tests
+## 🧠 Machine Learning Algorithms
 
-# Format with Ruff
-uv run ruff format src tests
+### 1. Content-Based Filtering
+- **TF-IDF Vectorization**: Converts movie metadata into numerical features
+- **Features Used**: Plot overview, genres, keywords, cast, director
+- **Similarity Metric**: Cosine similarity
+- **Advantage**: Works well for new users, doesn't need ratings
+
+### 2. Hybrid Recommendation
+Combines multiple signals:
+```python
+hybrid_score = 0.5 × content_similarity +
+               0.3 × normalized_rating +
+               0.2 × normalized_popularity
 ```
 
-### Linting
+### 3. Genre-Based Filtering
+- Filters movies by selected genre
+- Ranks by weighted score of rating and popularity
 
-```bash
-# Run Ruff linter
-uv run ruff check src tests
+## 📊 Dataset Features
 
-# Auto-fix issues
-uv run ruff check --fix src tests
-```
+| Feature | Description |
+|---------|-------------|
+| `movie_id` | Unique TMDb identifier |
+| `title` | Movie title |
+| `overview` | Plot summary |
+| `genres` | Pipe-separated genre list |
+| `vote_average` | Average user rating (0-10) |
+| `vote_count` | Number of votes |
+| `popularity` | TMDb popularity score |
+| `release_date` | Release date |
+| `runtime` | Movie duration (minutes) |
+| `cast` | Top 5 actors |
+| `director` | Film director |
+| `keywords` | Movie keywords/tags |
+| `poster_path` | Poster image path |
 
-### Type Checking
+## 🎨 Streamlit Features
 
-```bash
-uv run mypy src
-```
+### 1. Movie-Based Recommendations
+- Select any movie from the database
+- Get personalized recommendations based on similarity
+- Visual match percentage for each recommendation
 
-### Pre-commit Hooks
+### 2. Genre Explorer
+- Browse movies by genre
+- Smart ranking based on ratings and popularity
 
-Pre-commit hooks run automatically on `git commit`. To run manually:
+### 3. Top Rated Movies
+- Configurable minimum vote threshold
+- Discover critically acclaimed films
 
-```bash
-# Run on all files
-uv run pre-commit run --all-files
+### 4. Dataset Analytics
+- Interactive visualizations with Plotly
+- Rating distributions
+- Genre frequency analysis
+- Release year trends
 
-# Run on staged files
-uv run pre-commit run
-```
 
-## Project Structure
+## 📚 Potential Enhancements
 
-```
-.
-├── .devcontainer/
-│   └── devcontainer.json    # Dev container configuration
-├── src/
-│   └── my_python_project/   # Source code
-│       └── __init__.py
-├── tests/
-│   └── test_example.py      # Test files
-├── .gitignore
-├── .pre-commit-config.yaml  # Pre-commit hooks configuration
-├── pyproject.toml           # Project configuration
-├── README.md
-└── uv.lock                  # Locked dependencies (auto-generated)
-```
+### 1. User Rating System
+- Add user authentication
+- Store user ratings in database
+- Implement collaborative filtering (SVD, ALS)
 
-## Adding Dependencies
+### 2. Advanced Features
+- Neural network embeddings (Word2Vec, BERT)
+- Deep learning models (Neural Collaborative Filtering)
+- Real-time model updates
 
-```bash
-# Add a runtime dependency
-uv add requests
+### 3. Additional Data Sources
+- IMDb integration
+- Rotten Tomatoes scores
+- Streaming availability
 
-# Add a development dependency
-uv add --dev pytest-mock
 
-# Remove a dependency
-uv remove requests
-```
 
-## CI/CD
+## 🤝 Contributing
 
-This project is ready for CI/CD. Example GitHub Actions workflow:
-
-```yaml
-name: CI
-
-on: [push, pull_request]
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - name: Install uv
-        run: curl -LsSf https://astral.sh/uv/install.sh | sh
-      - name: Install dependencies
-        run: uv sync
-      - name: Run pre-commit
-        run: uv run pre-commit run --all-files
-      - name: Run tests
-        run: uv run pytest --cov
-```
-
-## License
-
-MIT
+Suggestions for improvement:
+1. Fork the repository
+2. Create a feature branch
+3. Implement enhancements
+4. Submit a pull request

@@ -54,3 +54,5 @@ dmypy.json
 
 # UV
 uv.lock
+
+.env
