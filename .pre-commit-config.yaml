@@ -39,3 +39,6 @@ repos:
         language: system
         pass_filenames: false
         always_run: true
+
+
+#pre-commit run --all-files
