@@ -93,7 +93,6 @@ python src/data/collector.py
 - Fetches 1,000+ popular movies from TMDb API
 - Enriches data with cast, crew, genres, and keywords
 - Saves to `src/data/movies_dataset.csv`
-- ⏱️ Duration: ~15-30 minutes (API rate limiting)
 
 **Customization:**
 ```python

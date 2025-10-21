@@ -75,11 +75,11 @@ def display_movie_card(
     with col1:
         poster_url = f"https://image.tmdb.org/t/p/w500{movie_row['poster_path']}"
         if movie_row["poster_path"] and not pd.isna(movie_row["poster_path"]):
-            st.image(poster_url, use_container_width=True)
+            st.image(poster_url, width="stretch")
         else:
             st.image(
                 "https://via.placeholder.com/300x450?text=No+Poster",
-                use_container_width=True,
+                width="stretch",
             )
 
     with col2:
@@ -176,7 +176,7 @@ def main() -> None:
         col1, col2 = st.columns([3, 1])
         with col1:
             get_recommendations = st.button(
-                "🔍 Get Recommendations", type="primary", use_container_width=True
+                "🔍 Get Recommendations", type="primary", width="stretch"
             )
 
         if get_recommendations and selected_movie:
@@ -273,7 +273,7 @@ def main() -> None:
                 labels={"vote_average": "Rating", "count": "Number of Movies"},
                 color_discrete_sequence=["#667eea"],
             )
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width="stretch")
 
         with tab2:
             # Genre frequency
@@ -292,7 +292,7 @@ def main() -> None:
                 color=genre_counts.values,
                 color_continuous_scale="Viridis",
             )
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width="stretch")
 
         with tab3:
             # Extract year from release_date
@@ -309,7 +309,7 @@ def main() -> None:
                 labels={"x": "Year", "y": "Number of Movies"},
                 markers=True,
             )
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width="stretch")
 
         # Raw data
         with st.expander("📋 View Raw Dataset"):
@@ -317,13 +317,13 @@ def main() -> None:
                 recommender.movies_df[
                     ["title", "genres", "vote_average", "release_date", "popularity"]
                 ],
-                use_container_width=True,
+                width="stretch",
             )
 
     # Footer
     st.markdown("---")
     st.markdown(
-        "<div style='text-align: center; color: #666;'>Made with ❤️ using Streamlit | Powered by TMDb API</div>",
+        "<div style='text-align: center; color: #666;'>Made by Mateo Rovere 🤙</div>",
         unsafe_allow_html=True,
     )
 

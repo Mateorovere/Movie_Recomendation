@@ -163,6 +163,6 @@ if __name__ == "__main__":
 
     df = collector.collect_and_save(
         output_file="src/data/movies_dataset.csv",
-        pages=50,  # 50 pages = ~1000 movies
-        max_movies=1000,  # Enrich first 500 movies (adjust based on time)
+        pages=100,  # 100 pages = ~2000 movies
+        max_movies=2000,  # Enrich first 2000 movies (adjust based on time)
     )
