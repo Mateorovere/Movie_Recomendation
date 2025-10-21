@@ -83,6 +83,7 @@ addopts = [
     "--cov=src",
     "--cov-report=term-missing",
     "--cov-report=html",
+    "-v",
 ]
 
 [tool.mypy]
