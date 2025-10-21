@@ -66,7 +66,9 @@ def load_recommender() -> MovieRecommenderSystem | None:
         return None
 
 
-def display_movie_card(movie_row, show_score=True, score_col="hybrid_score") -> None:
+def display_movie_card(
+    movie_row: pd.Series, show_score: bool = True, score_col: str = "hybrid_score"
+) -> None:
     """Display a movie card with details"""
     col1, col2 = st.columns([1, 3])
 

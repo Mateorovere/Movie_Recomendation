@@ -5,9 +5,10 @@ Collects comprehensive movie data for the recommender system
 
 import os
 import time
+from typing import Any
 
 import pandas as pd
-import requests
+import requests  # type: ignore[import-untyped]
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -48,7 +49,7 @@ class TMDbDataCollector:
 
         return movies
 
-    def get_movie_details(self, movie_id: int) -> dict:
+    def get_movie_details(self, movie_id: int) -> Any:
         """Fetch detailed information for a specific movie"""
         url = f"{self.base_url}/movie/{movie_id}"
         params = {
@@ -59,6 +60,7 @@ class TMDbDataCollector:
         try:
             response = requests.get(url, headers=self.headers, params=params)
             response.raise_for_status()
+            # return cast(dict[str, Any], response.json())
             return response.json()
         except Exception as e:
             print(f"Error fetching movie {movie_id}: {e}")
@@ -72,6 +74,8 @@ class TMDbDataCollector:
 
         for idx, movie in enumerate(movies[:max_movies]):
             movie_id = movie.get("id")
+            if not movie_id:
+                continue
             print(f"Enriching movie {idx+1}/{max_movies}: {movie.get('title')}")
 
             details = self.get_movie_details(movie_id)
@@ -114,7 +118,7 @@ class TMDbDataCollector:
         crew = credits.get("crew", [])
         for person in crew:
             if person.get("job") == "Director":
-                return person.get("name", "")
+                return str(person.get("name", ""))
         return ""
 
     def _extract_cast(self, credits: dict, top_n: int = 5) -> list[str]:
@@ -127,7 +131,7 @@ class TMDbDataCollector:
         output_file: str = "movies_dataset.csv",
         pages: int = 50,
         max_movies: int = 500,
-    ):
+    ) -> pd.DataFrame:
         """Main collection pipeline"""
         print("Starting data collection...")
 
@@ -140,7 +144,6 @@ class TMDbDataCollector:
         print("\n2. Enriching movie data...")
         df = self.enrich_movie_data(movies, max_movies=max_movies)
 
-        # Step 3: Save to CSV
         df.to_csv(output_file, index=False)
         print(f"\n✓ Dataset saved to {output_file}")
         print(f"Total movies: {len(df)}")
@@ -153,7 +156,9 @@ class TMDbDataCollector:
 if __name__ == "__main__":
     # Get your free API key at: https://www.themoviedb.org/settings/api
 
-    API_KEY = os.getenv("TMDB-API")
+    API_KEY = os.getenv("TMDB-API", "")
+    if not API_KEY:
+        raise ValueError("TMDB-API environment variable not set")
     collector = TMDbDataCollector(API_KEY)
 
     df = collector.collect_and_save(

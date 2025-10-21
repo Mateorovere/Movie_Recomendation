@@ -6,8 +6,10 @@ Implements multiple recommendation approaches:
 3. Hybrid Approach
 """
 
+# ruff: noqa: C416
 import pickle
 import re
+from typing import Any
 
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -17,11 +19,11 @@ from sklearn.preprocessing import MinMaxScaler
 
 class MovieRecommenderSystem:
     def __init__(self) -> None:
-        self.movies_df = None
-        self.tfidf_matrix = None
-        self.cosine_sim = None
-        self.title_to_idx = dict[str, int]()
-        self.idx_to_title = dict[int, str]()
+        self.movies_df: pd.DataFrame
+        self.tfidf_matrix: Any = None
+        self.cosine_sim: Any = None
+        self.title_to_idx: dict[str, int] = {}
+        self.idx_to_title: dict[int, str] = {}
 
     def load_data(self, filepath: str) -> None:
         """Load and preprocess movie dataset"""
@@ -44,10 +46,10 @@ class MovieRecommenderSystem:
 
         print(f"Loaded {len(self.movies_df)} movies")
 
-    def create_content_features(self):
+    def create_content_features(self) -> None:
         """Create feature vectors for content-based filtering"""
 
-        def clean_text(text):
+        def clean_text(text: str | float) -> str:
             """Clean and preprocess text"""
             if pd.isna(text):
                 return ""
@@ -56,7 +58,6 @@ class MovieRecommenderSystem:
             text = re.sub(r"[^a-zA-Z0-9\s]", "", text)
             return text
 
-        # Combine features into a single text representation
         self.movies_df["content"] = (
             self.movies_df["overview"]
             + " "
